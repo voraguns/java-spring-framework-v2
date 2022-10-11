@@ -1,35 +1,64 @@
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.SpringVersion;
 
 
-@Love(city="Bangkok")
 class Start {
     
-    @ShowLog()
-    
     public static void main(String[] data) {
+        System.out.println(SpringVersion.getVersion());
         ApplicationContext context;
-        context = new AnnotationConfigApplicationContext();
-        User u = new User();
+        context = new AnnotationConfigApplicationContext(Setup.class);
+        String[] all = context.getBeanDefinitionNames();
+        for (int i = 0; i < all.length; i++) {
+            System.out.println(all[i]);
+        }
+        
+        Player p = context.getBean("goal-keeper", Player.class);
+        System.out.println(p.name);
     }
 }
 
-@Deprecated
-class User {
-    int id;
-    @Deprecated String name;
-    String email;
+class Player {
+    String name;
+    int number;
+    double salary;
 }
 
-class Member {
+@Configuration
+class Setup {           // Configuration class
     
+    @Bean("captain")
+    Player create() {
+        Player p = new Player();
+        p.name = "Harry Karn";
+        p.number = 10;
+        p.salary = 75000.0;
+        return p;
+    }
+    
+    @Bean("goal-keeper")
+    Player create2() {
+        Player p = new Player();
+        p.name = "Peter Check";
+        p.number = 1;
+        p.salary = 40000.0;
+        return p;
+    }
+    
+    @Bean
+    Cashier cashier() {
+        Cashier c = new Cashier();
+        c.tax = 15.0;
+        c.name = "Susan W";
+        return c;
+    }
 }
 
-// Create Annotation by myself
-@interface Love {
-    String city();
+class Cashier {
+    double tax;
+    String name;
 }
-
-@interface ShowLog { }
